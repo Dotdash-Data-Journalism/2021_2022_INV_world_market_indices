@@ -47,6 +47,18 @@ def updateChart(dw_chart_id, dataSet, updateTitle, updateDate, dw_api_key):
 
     publishRes.raise_for_status()
 
+    time.sleep(2)
+
+    imgHeaders = {
+        "Accept": "image/png",
+        "Authorization": f"Bearer {dw_api_key}"
+        }
+    pngDwnldRes = requests.get(url=f"https://api.datawrapper.de/v3/charts/{dw_chart_id}/export/png?unit=px&mode=rgb&plain=false&scale=1&zoom=2&download=false&fullVector=false&ligatures=true&transparent=false&logo=auto&dark=false",
+    headers=imgHeaders)
+
+    pngDwnldRes.raise_for_status()
+
+
 
 ACCESS_TOKEN = os.getenv('DW_API_KEY')
 
