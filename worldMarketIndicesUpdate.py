@@ -57,6 +57,12 @@ def updateChart(dw_chart_id, dataSet, updateTitle, updateDate, dw_api_key):
     headers=imgHeaders)
 
     pngDwnldRes.raise_for_status()
+    latestPNG = pngDwnldRes.content
+
+    file = open('latestWorldMarketImage.png', 'wb')
+    file.write(latestPNG)
+    file.close()
+
 
 
 
