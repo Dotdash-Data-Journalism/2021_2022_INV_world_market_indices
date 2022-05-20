@@ -3,7 +3,7 @@ name: scraper-wm-indices-yahoo-finance
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10,25,40,55 11-12 * * 1-5' # runs four times an hour between 11am and 1pm UTC
+    - cron: '10,25,40,55 11-12 * * 1-5' # runs four times an hour between 11am and 12pm UTC
 
 jobs:
   build:
@@ -29,13 +29,11 @@ jobs:
         env: 
           DW_API_KEY: ${{ secrets.DW_API_KEY }}
         
-          
-      - name: commit & push files
-        run: |
-          git pull
-          git config --local user.email "actions@users.noreply.github.com"
-          git config --local user.name "Automated"
-          git add -A
-          timestamp=$(date -u)
-          git commit -m "Latest World Market Indices Update: ${timestamp}" || exit 0
-          git push
+      # push to git repo
+      - name: Add and commit
+        id: add_commit
+        uses: EndBug/add-and-commit@v8
+        with:
+          committer_name: Automated
+          committer_email: actions@users.noreply.github.com
+          message: "Latest data"
