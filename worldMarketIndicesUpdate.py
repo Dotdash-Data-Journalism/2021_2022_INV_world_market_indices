@@ -63,19 +63,31 @@ def updateChart(dw_chart_id, dataSet, updateTitle, updateDate, dw_api_key):
     file.write(latestPNG)
     file.close()
 
+# Function to use yfinance to get ticker data
+def getYFinance(ticker):
+    yfRes = yf.Ticker(ticker)
+    tickerDF = yfRes.history(period='5d', interval='1d', prepost=False, auto_adjust=False, actions=False)
+    time.sleep(0.25)
+    tickerDF.reset_index(level=0, inplace=True)
+    tickerDFSorted = tickerDF.sort_values(by=['Date'], ascending=False).reset_index(drop=True)
+    todayPrice = float(tickerDFSorted['Close'][0])
+    yesterdayPrice = float(tickerDFSorted['Close'][1])
+    dodChgYF = str(round(((todayPrice - yesterdayPrice) / yesterdayPrice) * 100, 2)) + '%'
 
+    return(dodChgYF)
 
 
 ACCESS_TOKEN = os.getenv('DW_API_KEY')
 
-wm = yf.Tickers("^AORD ^BSESN ^N225 ^KS11 399001.SZ 000001.SS ^HSI ^FCHI ^GDAXI ^FTSE ^TA125.TA ^GSPTSE ^GSPC")
+# wm = yf.Tickers("^AORD ^BSESN ^N225 ^KS11 399001.SZ 000001.SS ^HSI ^FCHI ^GDAXI ^FTSE ^TA125.TA ^GSPTSE ^GSPC")
+
+wm_tickers = ["^AORD", "^BSESN", "^N225", "^KS11", "399001.SZ", "000001.SS", "^HSI", "^FCHI", "^GDAXI", "^FTSE", "^TA125.TA", "^GSPTSE", "^GSPC"]
 
 pctCngList = []
 
-for key, value in wm.tickers.items():
-    time.sleep(1)
-    stock = value.info
-    pctCng = str(round(((stock['regularMarketPrice'] - stock['previousClose']) / stock['previousClose']) * 100, 2)) + '%'
+for ticker in wm_tickers():
+    time.sleep(3)
+    pctCng = getYFinance(ticker=ticker)
     pctCngList.append(pctCng)
 
 vmDict = {'Index': ['Australian All :au:',
