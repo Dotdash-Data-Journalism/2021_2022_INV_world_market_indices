@@ -85,7 +85,7 @@ wm_tickers = ["^AORD", "^BSESN", "^N225", "^KS11", "399001.SZ", "000001.SS", "^H
 
 pctCngList = []
 
-for ticker in wm_tickers():
+for ticker in wm_tickers:
     time.sleep(3)
     pctCng = getYFinance(ticker=ticker)
     pctCngList.append(pctCng)
